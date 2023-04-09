@@ -275,9 +275,9 @@ def printMap(V):
         a= 2*arch.position[0]
         b = 2*arch.position[1]
         map_matrix[a][b] = archColor(arch) + Fore.BLACK + 'AR'
-        map_matrix[a+1][b] = archColor(arch) + Fore.BLACK + '  '
+        map_matrix[a+1][b] = archColor(arch) + Fore.BLACK + 'ER'
         map_matrix[a][b+1] = archColor(arch) + Fore.BLACK + 'CH'
-        map_matrix[a+1][b+1] = archColor(arch) + Fore.BLACK + 'ER'
+        map_matrix[a+1][b+1] = archColor(arch) + Fore.BLACK + (' V' if arch.isInvisible() else '  ')
     
     for dr in dragons:
         a= 2*dr.position[0]

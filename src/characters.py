@@ -1,6 +1,7 @@
 import points as pt
 import collections
 from graph import moveWithoutBreakingWalls
+import time
 
 barbarians = []
 dragons = []
@@ -208,7 +209,7 @@ class Barbarian:
 
 
 class Archer:
-    def __init__(self, position):
+    def __init__(self, position, invisible=False):
         self.speed = 1
         self.health = 100
         self.max_health = 100
@@ -217,6 +218,14 @@ class Archer:
         self.position = position
         self.alive = True
         self.target = None
+        self.invisible = invisible
+        self.spawn_time = time.time()
+        
+    def isInvisible(self):
+        if self.invisible:
+            if time.time() - self.spawn_time > 10:
+                self.invisible = False    
+        return self.invisible
 
     def isInAttackradius(self,pos):
         r = abs(pos[0] - self.position[0])
@@ -231,7 +240,7 @@ class Archer:
         vmap = V.map
         r = abs(pos[0] - self.position[0])
         c = abs(pos[1] - self.position[1])
-        if(self.isInAttackradius(pos)):
+        if self.isInAttackradius(pos):
             info = vmap[pos[0]][pos[1]]
             if(info == pt.TOWNHALL):
                 self.break_building(pos[0], pos[1], V)
@@ -250,7 +259,7 @@ class Archer:
                 self.position = coords
             if(flag == 0):
                 return
-        if(r == 0):
+        if r == 0:
             if(pos[1] > self.position[1]):
                 for i in range(self.speed):
                     r = self.position[0]
@@ -763,6 +772,16 @@ def spawnArcher(pos):
     # convert tuple to list
     pos = list(pos)
     archer = Archer(pos)
+    troops_spawned['archer'] += 1
+    archers.append(archer)
+    
+def spawnSneakyArcher(pos):
+    if(pt.troop_limit['archer'] <= troops_spawned['archer']):
+        return
+
+    # convert tuple to list
+    pos = list(pos)
+    archer = Archer(pos, True)
     troops_spawned['archer'] += 1
     archers.append(archer)
 

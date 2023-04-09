@@ -25,6 +25,8 @@
 - Dead Troops don't heal
 - healers can't heal each other
 - splash radius of heal spell is a 3x3 square
+- Each Healer will move towards the closest troop not at full health
+- The limit of total number of archers applies to both normal and sneaky archers
 
 ## Controls
 
