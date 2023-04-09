@@ -41,7 +41,7 @@ class Barbarian:
         self.alive = True
         self.target = None
 
-    def move(self, pos, V, type):
+    def move(self, pos, V, type, King):
         if(self.alive == False):
             return
         vmap = V.map
@@ -50,11 +50,11 @@ class Barbarian:
         if(r + c == 1):
             info = vmap[pos[0]][pos[1]]
             if(info == pt.TOWNHALL):
-                self.break_building(pos[0], pos[1], V)
+                self.break_building(pos[0], pos[1], V, King)
                 return
             x = int(info.split(':')[1])
             y = int(info.split(':')[2])
-            self.break_building(x, y, V)
+            self.break_building(x, y, V, King)
             return
         elif type == 1:
             flag = 0
@@ -84,7 +84,7 @@ class Barbarian:
                     r = self.position[0]
                     c = self.position[1] + 1
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[1] += 1
                     if(abs(pos[1] - self.position[1]) == 1):
@@ -94,7 +94,7 @@ class Barbarian:
                     r = self.position[0]
                     c = self.position[1] - 1
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[1] -= 1
                     if(abs(pos[1] - self.position[1]) == 1):
@@ -105,7 +105,7 @@ class Barbarian:
                     r = self.position[0] + 1
                     c = self.position[1]
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[0] += 1
                     if(self.position[0] == pos[0]):
@@ -115,7 +115,7 @@ class Barbarian:
                     r = self.position[0] - 1
                     c = self.position[1]
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[0] -= 1
                     if(self.position[0] == pos[0]):
@@ -126,7 +126,7 @@ class Barbarian:
                     r = self.position[0]
                     c = self.position[1] + 1
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[1] += 1
                     if(self.position[1] == pos[1]):
@@ -136,7 +136,7 @@ class Barbarian:
                     r = self.position[0]
                     c = self.position[1] - 1
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[1] -= 1
                     if(self.position[1] == pos[1]):
@@ -147,7 +147,7 @@ class Barbarian:
                     r = self.position[0] + 1
                     c = self.position[1]
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[0] += 1
             else:
@@ -155,7 +155,7 @@ class Barbarian:
                     r = self.position[0] - 1
                     c = self.position[1]
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[0] -= 1
 
@@ -164,11 +164,11 @@ class Barbarian:
             return True
         return False
 
-    def break_wall(self, x, y, V):
+    def break_wall(self, x, y, V, King):
         target = V.wall_objs[(x, y)]
-        self.attack_target(target)
+        self.attack_target(target,King)
 
-    def break_building(self, x, y, V):
+    def break_building(self, x, y, V, King):
         target = None
         if(V.map[x][y] == pt.TOWNHALL):
             target = V.town_hall_obj
@@ -176,15 +176,15 @@ class Barbarian:
             all_buildings = collections.ChainMap(
                 V.hut_objs, V.cannon_objs, V.wizard_tower_objs)
             target = all_buildings[(x, y)]
-        self.attack_target(target)
+        self.attack_target(target, King)
 
-    def attack_target(self, target):
+    def attack_target(self, target,King):
         if(self.alive == False):
             return
         target.health -= self.attack
         if target.health <= 0:
             target.health = 0
-            target.destroy()
+            target.destroy(King)
 
     def kill(self):
         self.alive = False
@@ -234,7 +234,7 @@ class Archer:
             return True
         return False
 
-    def move(self, pos, V, type):
+    def move(self, pos, V, type, King):
         if(self.alive == False):
             return
         vmap = V.map
@@ -243,11 +243,11 @@ class Archer:
         if self.isInAttackradius(pos):
             info = vmap[pos[0]][pos[1]]
             if(info == pt.TOWNHALL):
-                self.break_building(pos[0], pos[1], V)
+                self.break_building(pos[0], pos[1], V, King)
                 return
             x = int(info.split(':')[1])
             y = int(info.split(':')[2])
-            self.break_building(x, y, V)
+            self.break_building(x, y, V, King)
             return
         elif type == 1:
             flag = 0
@@ -265,7 +265,7 @@ class Archer:
                     r = self.position[0]
                     c = self.position[1] + 1
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[1] += 1
                     if(self.isInAttackradius(pos)):
@@ -275,7 +275,7 @@ class Archer:
                     r = self.position[0]
                     c = self.position[1] - 1
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[1] -= 1
                     if(self.isInAttackradius(pos)):
@@ -286,7 +286,7 @@ class Archer:
                     r = self.position[0] + 1
                     c = self.position[1]
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[0] += 1
                     if(self.position[0] == pos[0] or self.isInAttackradius(pos)):
@@ -296,7 +296,7 @@ class Archer:
                     r = self.position[0] - 1
                     c = self.position[1]
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[0] -= 1
                     if(self.position[0] == pos[0] or self.isInAttackradius(pos)):
@@ -307,7 +307,7 @@ class Archer:
                     r = self.position[0]
                     c = self.position[1] + 1
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[1] += 1
                     if(self.position[1] == pos[1] or self.isInAttackradius(pos)):
@@ -317,7 +317,7 @@ class Archer:
                     r = self.position[0]
                     c = self.position[1] - 1
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[1] -= 1
                     if(self.position[1] == pos[1] or self.isInAttackradius(pos)):
@@ -328,7 +328,7 @@ class Archer:
                     r = self.position[0] + 1
                     c = self.position[1]
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[0] += 1
                     if(self.isInAttackradius(pos)):
@@ -338,7 +338,7 @@ class Archer:
                     r = self.position[0] - 1
                     c = self.position[1]
                     if(self.check_for_walls(r, c, vmap)):
-                        self.break_wall(r, c, V)
+                        self.break_wall(r, c, V, King)
                         return
                     self.position[0] -= 1
                     if(self.isInAttackradius(pos)):
@@ -349,11 +349,11 @@ class Archer:
             return True
         return False
 
-    def break_wall(self, x, y, V):
+    def break_wall(self, x, y, V, King):
         target = V.wall_objs[(x, y)]
-        self.attack_target(target)
+        self.attack_target(target,King)
 
-    def break_building(self, x, y, V):
+    def break_building(self, x, y, V, King):
         target = None
         if(V.map[x][y] == pt.TOWNHALL):
             target = V.town_hall_obj
@@ -361,15 +361,15 @@ class Archer:
             all_buildings = collections.ChainMap(
                 V.hut_objs, V.cannon_objs, V.wizard_tower_objs)
             target = all_buildings[(x, y)]
-        self.attack_target(target)
+        self.attack_target(target,King)
 
-    def attack_target(self, target):
+    def attack_target(self, target,King):
         if(self.alive == False):
             return
         target.health -= self.attack
         if target.health <= 0:
             target.health = 0
-            target.destroy()
+            target.destroy(King)
 
     def kill(self):
         self.alive = False
@@ -403,7 +403,7 @@ class Dragon:
         self.alive = True
         
 
-    def move(self, pos, V):
+    def move(self, pos, V, King):
         if(self.alive == False):
             return
         vmap = V.map
@@ -412,11 +412,11 @@ class Dragon:
         if(r + c == 1):
             info = vmap[pos[0]][pos[1]]
             if(info == pt.TOWNHALL):
-                self.break_building(pos[0], pos[1], V)
+                self.break_building(pos[0], pos[1], V, King)
                 return
             x = int(info.split(':')[1])
             y = int(info.split(':')[2])
-            self.break_building(x, y, V)
+            self.break_building(x, y, V, King)
             return
         elif(r == 0):
             if(pos[1] > self.position[1]):
@@ -475,7 +475,7 @@ class Dragon:
                     c = self.position[1]
                     self.position[0] -= 1
 
-    def break_building(self, x, y, V):
+    def break_building(self, x, y, V, King):
         target = None
         if(V.map[x][y] == pt.TOWNHALL):
             target = V.town_hall_obj
@@ -483,15 +483,15 @@ class Dragon:
             all_buildings = collections.ChainMap(
                 V.hut_objs, V.cannon_objs, V.wizard_tower_objs)
             target = all_buildings[(x, y)]
-        self.attack_target(target)
+        self.attack_target(target,King)
 
-    def attack_target(self, target):
+    def attack_target(self, target,King):
         if(self.alive == False):
             return
         target.health -= self.attack
         if target.health <= 0:
             target.health = 0
-            target.destroy()
+            target.destroy(King)
 
     def kill(self):
         self.alive = False
@@ -525,7 +525,7 @@ class Balloon:
         self.alive = True
         
 
-    def move(self, pos, V):
+    def move(self, pos, V, King):
         if(self.alive == False):
             return
         vmap = V.map
@@ -534,11 +534,11 @@ class Balloon:
         if(r + c == 1):
             info = vmap[pos[0]][pos[1]]
             if(info == pt.TOWNHALL):
-                self.break_building(pos[0], pos[1], V)
+                self.break_building(pos[0], pos[1], V, King)
                 return
             x = int(info.split(':')[1])
             y = int(info.split(':')[2])
-            self.break_building(x, y, V)
+            self.break_building(x, y, V, King)
             return
         elif(r == 0):
             if(pos[1] > self.position[1]):
@@ -591,7 +591,7 @@ class Balloon:
             else:
                     self.position[0] -= 1
 
-    def break_building(self, x, y, V):
+    def break_building(self, x, y, V, King):
         target = None
         if(V.map[x][y] == pt.TOWNHALL):
             target = V.town_hall_obj
@@ -599,15 +599,15 @@ class Balloon:
             all_buildings = collections.ChainMap(
                 V.hut_objs, V.cannon_objs, V.wizard_tower_objs)
             target = all_buildings[(x, y)]
-        self.attack_target(target)
+        self.attack_target(target,King)
 
-    def attack_target(self, target):
+    def attack_target(self, target,King):
         if(self.alive == False):
             return
         target.health -= self.attack
         if target.health <= 0:
             target.health = 0
-            target.destroy()
+            target.destroy(King)
 
     def kill(self):
         self.alive = False
@@ -694,32 +694,6 @@ class Healer:
                     self.position[0] -= 1
                     if (self.position[0] == pos[0]):
                         return
-        # elif (c > 1):
-        #     if (pos[1] > self.position[1]):
-        #         for i in range(self.speed):
-        #             r = self.position[0]
-        #             c = self.position[1] + 1
-        #             self.position[1] += 1
-        #             if (self.position[1] == pos[1]):
-        #                 return
-        #     else:
-        #         for i in range(self.speed):
-        #             r = self.position[0]
-        #             c = self.position[1] - 1
-        #             self.position[1] -= 1
-        #             if (self.position[1] == pos[1]):
-        #                 return
-        # elif (r+c == 2):
-        #     if (pos[0] > self.position[0]):
-        #         for i in range(self.speed):
-        #             r = self.position[0] + 1
-        #             c = self.position[1]
-        #             self.position[0] += 1
-        #     else:
-        #         for i in range(self.speed):
-        #             r = self.position[0] - 1
-        #             c = self.position[1]
-        #             self.position[0] -= 1
 
     def heal(self, pos, King):
         troops = [barbarians, archers, balloons, dragons, [King]]
@@ -815,7 +789,7 @@ def spawnHealer(pos):
     troops_spawned['healer'] += 1
     healers.append(hl)
 
-def move_barbarians(V,type):
+def move_barbarians(V,type,King):
     if(type == 1):
         for barb in barbarians:
             if(barb.alive == False):
@@ -828,7 +802,7 @@ def move_barbarians(V,type):
                 barb.target = search_for_closest_building(barb.position, V.map, 0)
             if(barb.target == None):
                 continue
-            barb.move(barb.target, V, type)
+            barb.move(barb.target, V, type, King)
     elif(type == 2):
         for barb in barbarians:
             if(barb.alive == False):
@@ -836,9 +810,9 @@ def move_barbarians(V,type):
             closest_building = search_for_closest_building(barb.position, V.map, 0)
             if(closest_building == None):
                 continue
-            barb.move(closest_building, V, type)
+            barb.move(closest_building, V, type, King)
 
-def move_archers(V,type):
+def move_archers(V,type,King):
     if(type == 1):
         for archer in archers:
             if(archer.alive == False):
@@ -850,7 +824,7 @@ def move_archers(V,type):
                 archer.target = search_for_closest_building(archer.position, V.map, 0)
             if(archer.target == None):
                 continue
-            archer.move(archer.target, V,type)
+            archer.move(archer.target, V,type, King)
     elif(type == 2):
         for archer in archers:
             if(archer.alive == False):
@@ -858,16 +832,27 @@ def move_archers(V,type):
             closest_building = search_for_closest_building(archer.position, V.map, 0)
             if(closest_building == None):
                 continue
-            archer.move(closest_building, V, type)
+            archer.move(closest_building, V, type, King)
 
-def move_dragons(V):
+def move_balloons(V, King):
+    # if hl.isInAttackradius(closest_troop):
+    for bal in balloons:
+        if (bal.alive == False):
+            continue
+        closest_building = search_for_closest_building(bal.position, V.map, 1)
+        if (closest_building == None):
+            continue
+        bal.move(closest_building, V, King)
+        #     hl.heal(closest_troop,King)
+
+def move_dragons(V,King):
     for dr in dragons:
         if(dr.alive == False):
             continue
         closest_building = search_for_closest_building(dr.position, V.map, 0)
         if(closest_building == None):
             continue
-        dr.move(closest_building, V)
+        dr.move(closest_building, V, King)
 
 def move_healers(King, V):
     for hl in healers:
@@ -879,17 +864,6 @@ def move_healers(King, V):
         if(closest_troop == None):
             continue
         hl.move(closest_troop, King)
-        # if hl.isInAttackradius(closest_troop):
-        #     hl.heal(closest_troop,King)
-
-def move_balloons(V):
-    for bal in balloons:
-        if(bal.alive == False):
-            continue
-        closest_building = search_for_closest_building(bal.position, V.map, 1)
-        if(closest_building == None):
-            continue
-        bal.move(closest_building, V)
 
 def search_for_closest_building(pos, vmap, prioritized):
     closest_building = None

@@ -1,12 +1,15 @@
 import numpy as np
 import points as pt
 from characters import barbarians, dragons, balloons, archers, healers, Archer
-import random
+
 
 class Building:
-    def destroy(self):
+    def destroy(self,King):
         self.destroyed = True
-        if self.type == 'wall':
+        if self.type == 'wall' and self.level >= 3:
+            for t in barbarians + archers + [King]:
+                if max(abs(t.position[0] - self.position[0]), abs(t.position[1] - self.position[1])) <= 2:
+                    t.deal_damage(200)
             self.V.remove_wall(self)
         elif self.type == 'hut':
             self.V.remove_hut(self)
@@ -35,7 +38,7 @@ class Cannon(Building):
         self.dimensions = (2, 2)
         self.V = V
         self.destroyed = False
-        self.level = random.randint(0, 2) + V.level 
+        self.level = V.level 
         self.health = 60 + 30 * self.level
         self.max_health = 60 + 30 * self.level
         self.type = 'cannon'
@@ -85,7 +88,8 @@ class Wall(Building):
         self.dimensions = (1, 1)
         self.V = V
         self.destroyed = False
-        self.level = random.randint(0, 2) + V.level
+        self.level = V.level
+        
         self.health = 100 + 40 * self.level
         self.max_health = 100 + 40 * self.level
         self.type = 'wall'
@@ -108,7 +112,7 @@ class WizardTower(Building):
         self.dimensions = (1, 1)
         self.V = V
         self.destroyed = False
-        self.level = random.randint(0, 2) + V.level
+        self.level = V.level
         self.health = 60 + 30 * self.level
         self.max_health = 60 + 30 * self.level
         self.type = 'wizardtower'

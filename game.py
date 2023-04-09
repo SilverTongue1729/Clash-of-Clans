@@ -56,6 +56,7 @@ elif ch == 2:
 King = king.getHero(pt.hero)
 os.system('clear')
 printMap(V)
+
 Phealth(showKingHealth(King.health))
 
 
@@ -86,7 +87,7 @@ def init_level(level):
 #     pass
 
 
-
+# render loop
 
 while(True):
     cnt += 1
@@ -147,10 +148,10 @@ while(True):
         print('quit')
         break
     # os.system('clear')
-    move_barbarians(V,pt.movement)
-    move_archers(V,pt.movement)
-    move_dragons(V)
-    move_balloons(V)
+    move_barbarians(V,pt.movement,King)
+    move_archers(V,pt.movement,King)
+    move_dragons(V,King)
+    move_balloons(V,King)
     move_healers(King,V)
     shoot_cannons(King, V)
     shoot_wizard_towers(King, V)

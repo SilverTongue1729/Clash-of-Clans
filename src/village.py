@@ -44,14 +44,10 @@ class Village:
         for hut in self.huts:                                           # hut is 2x2
             hut_obj = bd.Hut(hut, self)
             self.hut_objs[hut] = hut_obj
-            map[hut[0]][hut[1]] = pt.HUT + ":" + \
-                str(hut[0]) + ":" + str(hut[1])
-            map[hut[0]+1][hut[1]] = pt.HUT + ":" + \
-                str(hut[0]) + ":" + str(hut[1])
-            map[hut[0]][hut[1]+1] = pt.HUT + ":" + \
-                str(hut[0]) + ":" + str(hut[1])
-            map[hut[0]+1][hut[1]+1] = pt.HUT + \
-                ":" + str(hut[0]) + ":" + str(hut[1])
+            map[hut[0]][hut[1]] = pt.HUT + ":" + str(hut[0]) + ":" + str(hut[1])
+            map[hut[0]+1][hut[1]] = pt.HUT + ":" + str(hut[0]) + ":" + str(hut[1])
+            map[hut[0]][hut[1]+1] = pt.HUT + ":" + str(hut[0]) + ":" + str(hut[1])
+            map[hut[0]+1][hut[1]+1] = pt.HUT + ":" + str(hut[0]) + ":" + str(hut[1])
         for walls, wall_type in [(self.walls_top, pt.WALL_TOP),
                                  (self.walls_bottom, pt.WALL_BOTTOM),
                                  (self.walls_left, pt.WALL_LEFT),
