@@ -4,7 +4,7 @@ init(autoreset=True)
 import points as pt
 import numpy as np
 import datetime
-from characters import barbarians, dragons, balloons, archers
+from characters import barbarians, dragons, balloons, archers, healers
 
 # 50 - 100 : cyan
 # 20 - 50 : yellow
@@ -60,7 +60,6 @@ def barbColor(barb):
         return Back.WHITE
 
 
-
 def drColor(dr):
     health = dr.health
     max_health = dr.max_health
@@ -94,7 +93,17 @@ def blColor(bl):
     else:
         return Back.WHITE
         
-
+def hlColor(bl):
+    health = bl.health
+    max_health = bl.max_health
+    percentage = (health*100)/max_health
+    if(percentage > 50):
+        return Back.LIGHTGREEN_EX
+    elif percentage > 20:
+        return Back.BLUE
+    else:
+        return Back.WHITE
+        
 
 def printMap(V):
     map = np.copy(V.map)
@@ -270,7 +279,6 @@ def printMap(V):
         map_matrix[a][b+1] = archColor(arch) + Fore.BLACK + 'CH'
         map_matrix[a+1][b+1] = archColor(arch) + Fore.BLACK + 'ER'
     
-
     for dr in dragons:
         a= 2*dr.position[0]
         b = 2*dr.position[1]
@@ -286,6 +294,14 @@ def printMap(V):
         map_matrix[a+1][b] = blColor(bl) + Fore.BLACK + 'OO'
         map_matrix[a][b+1] = blColor(bl) + Fore.BLACK + 'LL'
         map_matrix[a+1][b+1] = blColor(bl) + Fore.BLACK + 'N '
+        
+    for hl in healers:
+        a= 2*hl.position[0]
+        b = 2*hl.position[1]
+        map_matrix[a][b] = hlColor(hl) + Fore.BLACK + 'HE'
+        map_matrix[a+1][b] = hlColor(hl) + Fore.BLACK + 'ER'
+        map_matrix[a][b+1] = hlColor(hl) + Fore.BLACK + 'AL'
+        map_matrix[a+1][b+1] = hlColor(hl) + Fore.BLACK + '  '
 
 
 

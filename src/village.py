@@ -2,7 +2,7 @@ import numpy as np
 import points as pt
 import buildings as bd
 import collections
-from characters import barbarians, dragons,balloons, archers
+from characters import barbarians, dragons, balloons, archers, healers
 
 
 class Village:
@@ -52,38 +52,18 @@ class Village:
                 str(hut[0]) + ":" + str(hut[1])
             map[hut[0]+1][hut[1]+1] = pt.HUT + \
                 ":" + str(hut[0]) + ":" + str(hut[1])
-        for wall in self.walls_top:                                     # wall is 1x1
-            wall_obj = bd.Wall(wall, self)
-            self.wall_objs[wall] = wall_obj
-            map[wall[0]][wall[1]] = pt.WALL_TOP
-        for wall in self.walls_bottom:
-            wall_obj = bd.Wall(wall, self)
-            self.wall_objs[wall] = wall_obj
-            map[wall[0]][wall[1]] = pt.WALL_BOTTOM
-        for wall in self.walls_left:
-            wall_obj = bd.Wall(wall, self)
-            self.wall_objs[wall] = wall_obj
-            map[wall[0]][wall[1]] = pt.WALL_LEFT
-        for wall in self.walls_right:
-            wall_obj = bd.Wall(wall, self)
-            self.wall_objs[wall] = wall_obj
-            map[wall[0]][wall[1]] = pt.WALL_RIGHT
-        for wall in self.walls_topright:
-            wall_obj = bd.Wall(wall, self)
-            self.wall_objs[wall] = wall_obj
-            map[wall[0]][wall[1]] = pt.WALL_TOPRIGHT
-        for wall in self.walls_topleft:
-            wall_obj = bd.Wall(wall, self)
-            self.wall_objs[wall] = wall_obj
-            map[wall[0]][wall[1]] = pt.WALL_TOPLEFT
-        for wall in self.walls_bottomright:
-            wall_obj = bd.Wall(wall, self)
-            self.wall_objs[wall] = wall_obj
-            map[wall[0]][wall[1]] = pt.WALL_BOTTOMRIGHT
-        for wall in self.walls_bottomleft:
-            wall_obj = bd.Wall(wall, self)
-            self.wall_objs[wall] = wall_obj
-            map[wall[0]][wall[1]] = pt.WALL_BOTTOMLEFT
+        for walls, wall_type in [(self.walls_top, pt.WALL_TOP),
+                                 (self.walls_bottom, pt.WALL_BOTTOM),
+                                 (self.walls_left, pt.WALL_LEFT),
+                                 (self.walls_right, pt.WALL_RIGHT),
+                                 (self.walls_topright, pt.WALL_TOPRIGHT),
+                                 (self.walls_topleft, pt.WALL_TOPLEFT),
+                                 (self.walls_bottomright, pt.WALL_BOTTOMRIGHT),
+                                 (self.walls_bottomleft, pt.WALL_BOTTOMLEFT)]:
+          for wall in walls:
+              wall_obj = bd.Wall(wall, self)
+              self.wall_objs[wall] = wall_obj
+              map[wall[0]][wall[1]] = wall_type
         for cannon in self.cannons:                                     # cannon is 2x2
             cannon_obj = bd.Cannon(cannon, self)
             self.cannon_objs[cannon] = cannon_obj

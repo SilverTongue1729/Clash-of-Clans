@@ -59,43 +59,6 @@ class King:
                     break
                 self.position[1] += 1
         pt.HERO_POS = self.position
-
-
-    # def move(self, direction,V):
-    #     if(self.alive == False):
-    #         return
-    #     vmap = V.map
-    #     if direction == 'up':
-    #         temp = self.position[0]
-    #         self.position[0] -= self.speed
-    #         if self.position[0] < 0:
-    #             self.position[0] = 0
-    #         if vmap[self.position[0]][self.position[1]] != pt.BLANK and vmap[self.position[0]][self.position[1]] != pt.SPAWN:
-    #             self.position[0] = temp
-    #     elif direction == 'down':
-    #         temp = self.position[0]
-    #         self.position[0] += self.speed
-    #         if self.position[0] >= pt.config['dimensions'][0]:
-    #             self.position[0] = pt.config['dimensions'][0] - 1
-    #         if vmap[self.position[0]][self.position[1]] != pt.BLANK and vmap[self.position[0]][self.position[1]] != pt.SPAWN:
-    #             self.position[0] = temp
-    #     elif direction == 'left':
-    #         temp = self.position[1]
-    #         self.position[1] -= self.speed
-    #         if self.position[1] < 0:
-    #             self.position[1] = 0
-    #         if vmap[self.position[0]][self.position[1]] != pt.BLANK and vmap[self.position[0]][self.position[1]] != pt.SPAWN:
-    #             self.position[1] = temp
-    #     elif direction == 'right':
-    #         temp = self.position[1]
-    #         self.position[1] += self.speed
-    #         if self.position[1] >= pt.config['dimensions'][1]:
-    #             self.position[1] = pt.config['dimensions'][1] - 1
-    #         if vmap[self.position[0]][self.position[1]] != pt.BLANK and vmap[self.position[0]][self.position[1]] != pt.SPAWN:
-    #             self.position[1] = temp
-    #     pt.HERO_POS = self.position
-
-    
     
     def attack_target(self, target,attack):
         if(self.alive == False):

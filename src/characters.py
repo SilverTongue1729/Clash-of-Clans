@@ -6,12 +6,14 @@ barbarians = []
 dragons = []
 balloons = []
 archers = []
+healers = []
 
 troops_spawned = {
     'barbarian': 0,
     'archer': 0,
     'dragon': 0,
-    'balloon': 0
+    'balloon': 0,
+    'healer': 0 
 }
 
 
@@ -20,10 +22,12 @@ def clearTroops():
     dragons.clear()
     balloons.clear()
     archers.clear()
+    healers.clear()
     troops_spawned['barbarian'] = 0
     troops_spawned['dragon'] = 0
     troops_spawned['balloon'] = 0
     troops_spawned['archer'] = 0
+    troops_spawned['healer'] = 0
 
 
 class Barbarian:
@@ -209,7 +213,7 @@ class Archer:
         self.health = 100
         self.max_health = 100
         self.attack = 1
-        self.attack_radius = 6
+        self.attack_radius = 4
         self.position = position
         self.alive = True
         self.target = None
@@ -618,6 +622,130 @@ class Balloon:
             self.health = self.max_health
 
 
+class Healer:
+    def __init__(self, position):
+        self.speed = 1
+        self.health = 250
+        self.max_health = 250
+        self.attack = 20
+        self.position = position
+        self.alive = True
+        self.attack_radius = 7
+        self.splash_radius = 1
+
+    def isInAttackradius(self,pos):
+        r = abs(pos[0] - self.position[0])
+        c = abs(pos[1] - self.position[1])
+        if(r**2 + c**2 <= self.attack_radius**2):
+            return True
+        return False
+
+    def isInSplashradius(self,pos,pos2):
+        r = abs(pos[0] - pos2[0])
+        c = abs(pos[1] - pos2[1])
+        if max(r,c) <= self.splash_radius:
+            return True
+        return False
+
+    def move(self, pos, King):
+        if (self.alive == False):
+            return
+        r = abs(pos[0] - self.position[0])
+        c = abs(pos[1] - self.position[1])
+        if (self.isInAttackradius(pos)):
+            self.heal(pos, King)
+            return
+        elif (c > r):
+            if (pos[1] > self.position[1]):
+                for i in range(self.speed):
+                    r = self.position[0]
+                    c = self.position[1] + 1
+                    self.position[1] += 1
+                    if (pos[1] == self.position[1]):
+                        break
+            else:
+                for i in range(self.speed):
+                    r = self.position[0]
+                    c = self.position[1] - 1
+                    self.position[1] -= 1
+                    if (pos[1] == self.position[1]):
+                        break
+        else:
+            if (pos[0] > self.position[0]):
+                for i in range(self.speed):
+                    r = self.position[0] + 1
+                    c = self.position[1]
+                    self.position[0] += 1
+                    if (self.position[0] == pos[0]):
+                        return
+            else:
+                for i in range(self.speed):
+                    r = self.position[0] - 1
+                    c = self.position[1]
+                    self.position[0] -= 1
+                    if (self.position[0] == pos[0]):
+                        return
+        # elif (c > 1):
+        #     if (pos[1] > self.position[1]):
+        #         for i in range(self.speed):
+        #             r = self.position[0]
+        #             c = self.position[1] + 1
+        #             self.position[1] += 1
+        #             if (self.position[1] == pos[1]):
+        #                 return
+        #     else:
+        #         for i in range(self.speed):
+        #             r = self.position[0]
+        #             c = self.position[1] - 1
+        #             self.position[1] -= 1
+        #             if (self.position[1] == pos[1]):
+        #                 return
+        # elif (r+c == 2):
+        #     if (pos[0] > self.position[0]):
+        #         for i in range(self.speed):
+        #             r = self.position[0] + 1
+        #             c = self.position[1]
+        #             self.position[0] += 1
+        #     else:
+        #         for i in range(self.speed):
+        #             r = self.position[0] - 1
+        #             c = self.position[1]
+        #             self.position[0] -= 1
+
+    def heal(self, pos, King):
+        troops = [barbarians, archers, balloons, dragons, [King]]
+        for troop in troops:
+            for t in troop:
+                if t.alive and self.isInSplashradius(t.position,pos):
+                    self.heal_troop(t)
+
+    def heal_troop(self, troop):
+        troop.health += self.attack
+        if troop.health > troop.max_health:
+            troop.health = troop.max_health
+
+    def kill(self):
+        self.alive = False
+        healers.remove(self)
+
+    def deal_damage(self, hit):
+        if (self.alive == False):
+            return
+        self.health -= hit
+        if self.health <= 0:
+            self.health = 0
+            self.kill()
+
+    def rage_effect(self):
+        self.speed = self.speed*2
+        self.attack = self.attack*2
+
+    def heal_effect(self):
+        self.health = self.health*1.5
+        if self.health > self.max_health:
+            self.health = self.max_health
+
+
 def spawnBarbarian(pos):
     if(pt.troop_limit['barbarian'] <= troops_spawned['barbarian']):
         return
@@ -657,6 +785,16 @@ def spawnBalloon(pos):
     bal = Balloon(pos)
     troops_spawned['balloon'] += 1
     balloons.append(bal)
+    
+def spawnHealer(pos):
+    if(pt.troop_limit['healer'] <= troops_spawned['healer']):
+        return
+
+    # convert tuple to list
+    pos = list(pos)
+    hl = Healer(pos)
+    troops_spawned['healer'] += 1
+    healers.append(hl)
 
 def move_barbarians(V,type):
     if(type == 1):
@@ -712,6 +850,19 @@ def move_dragons(V):
             continue
         dr.move(closest_building, V)
 
+def move_healers(King, V):
+    for hl in healers:
+        if hl.alive == False :
+            continue
+          
+        # closest_building = search_for_closest_building(hl.position, V.map, 0)
+        closest_troop = search_for_closest_troop(hl.position, King)
+        if(closest_troop == None):
+            continue
+        hl.move(closest_troop, King)
+        # if hl.isInAttackradius(closest_troop):
+        #     hl.heal(closest_troop,King)
+
 def move_balloons(V):
     for bal in balloons:
         if(bal.alive == False):
@@ -748,6 +899,24 @@ def search_for_closest_building(pos, vmap, prioritized):
         return search_for_closest_building(pos, vmap, 0)
     else:
         return closest_building
+
+def search_for_closest_troop(pos, King):
+    closest_troop = None
+    closest_distance = 10000
+    troops = [barbarians, archers, dragons, balloons,[King]]
+    
+    for troop in troops:
+        for t in troop:
+            if(t.alive == False or t.health == t.max_health):
+                continue
+            dist = abs(t.position[0] - pos[0]) + abs(t.position[1] - pos[1])
+            if(dist < closest_distance):
+                closest_distance = dist
+                closest_troop = t.position
+    if(closest_troop == None):
+        return None
+    else:
+        return closest_troop
 
 def findPathWithoutWall(grid,start,end):
     graph = []
