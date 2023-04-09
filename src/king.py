@@ -4,8 +4,8 @@ from threading import Timer
 class King:
     def __init__(self, pos):
         self.speed = 1
-        self.health = 100
-        self.max_health = 100
+        self.health = 300
+        self.max_health = 300
         self.attack = 30
         self.AoE = 10
         self.facing = ''
@@ -66,7 +66,7 @@ class King:
         target.health -= attack
         if target.health <= 0:
             target.health = 0
-            target.destroy()
+            target.destroy(self)
 
     def specialAttack(self,V):
         if(self.alive == False):
@@ -120,8 +120,8 @@ class King:
 class Queen:
     def __init__(self, pos):
         self.speed = 1
-        self.health = 100
-        self.max_health = 100
+        self.health = 300
+        self.max_health = 300
         self.attack = 10
         self.AoE = 10
         self.facing = ''
@@ -184,7 +184,7 @@ class Queen:
         target.health -= attack
         if target.health <= 0:
             target.health = 0
-            target.destroy()
+            target.destroy(self)
 
     def specialAttack(self,V):
         if(self.alive == False):

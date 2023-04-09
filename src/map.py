@@ -103,57 +103,39 @@ def hlColor(bl):
         return Back.BLUE
     else:
         return Back.WHITE
-        
+                
 
 def printMap(V):
     map = np.copy(V.map)
     map_matrix = np.empty((pt.config['dimensions'][0]*2,pt.config['dimensions'][1]*2), dtype=object)
     for i in range(map.shape[0]):
         for j in range(map.shape[1]):
+            
+            level = 0
             if(map[i][j].split(':')[0] == pt.BLANK):
                 for a in range(2):
                     for b in range(2):
                         map_matrix[2*i+a][2*j+b] = Back.GREEN + '  '
             elif(map[i][j].split(':')[0] == pt.WALL_TOP):
-                map_matrix[2*i][2*j] = Back.BLACK + '  '
-                map_matrix[2*i][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j+1] = Back.BLACK + '  '
-            elif(map[i][j].split(':')[0] == pt.WALL_BOTTOM):
-                map_matrix[2*i+1][2*j] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i][2*j] = Back.BLACK + '  '
-                map_matrix[2*i][2*j+1] = Back.BLACK + '  '
-            elif(map[i][j].split(':')[0] == pt.WALL_LEFT):
-                map_matrix[2*i][2*j] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j] = Back.BLACK + '  '
-                map_matrix[2*i][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j+1] = Back.BLACK + '  '
-            elif(map[i][j].split(':')[0] == pt.WALL_RIGHT):
-                map_matrix[2*i][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i][2*j] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j] = Back.BLACK + '  '
-            elif(map[i][j].split(':')[0] == pt.WALL_TOPLEFT):
-                map_matrix[2*i][2*j] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j] = Back.BLACK + '  '
-                map_matrix[2*i][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j+1] = Back.BLACK + '  '
-            elif(map[i][j].split(':')[0] == pt.WALL_TOPRIGHT):
-                map_matrix[2*i][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i][2*j] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j] = Back.BLACK + '  '
-            elif(map[i][j].split(':')[0] == pt.WALL_BOTTOMLEFT):
-                map_matrix[2*i+1][2*j] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i][2*j] = Back.BLACK + '  '
-                map_matrix[2*i][2*j+1] = Back.BLACK + '  '
-            elif(map[i][j].split(':')[0] == pt.WALL_BOTTOMRIGHT):
-                map_matrix[2*i+1][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i][2*j+1] = Back.BLACK + '  '
-                map_matrix[2*i+1][2*j] = Back.BLACK + '  '
-                map_matrix[2*i][2*j] = Back.BLACK + '  '
+                color = Back.BLACK
+                
+                lvl = V.wall_objs[(i,j)].level
+                if lvl == 1:
+                    color = Back.LIGHTBLACK_EX
+                elif lvl == 2:
+                    color = Back.LIGHTCYAN_EX
+                elif lvl == 3:
+                    color = Back.LIGHTYELLOW_EX
+                elif lvl == 4:
+                    color = Back.LIGHTBLUE_EX
+                elif lvl == 5:
+                    color = Back.LIGHTMAGENTA_EX
+                
+                # map_matrix[2*i][2*j] = color + ' ' + str(V.wall_objs[(i,j)].level)
+                map_matrix[2*i][2*j] = color + '  '
+                map_matrix[2*i][2*j+1] = color + '  '
+                map_matrix[2*i+1][2*j] = color + '  '
+                map_matrix[2*i+1][2*j+1] = color + '  '
             elif(map[i][j].split(':')[0] == pt.SPAWN):
                 map_matrix[2*i][2*j] = Back.WHITE + '  '
                 map_matrix[2*i][2*j+1] = Back.WHITE + '  '
@@ -173,9 +155,9 @@ def printMap(V):
                 map_matrix[2*i+2][2*j+1] = color + 'NN'
                 map_matrix[2*i+2][2*j+2] = color + 'ON' 
                 map_matrix[2*i+2][2*j+3] = Back.GREEN + '  '
-                map_matrix[2*i+3][2*j] = color + '  '
-                map_matrix[2*i+3][2*j+1] = color + '  '
-                map_matrix[2*i+3][2*j+2] = Back.GREEN + '  '
+                map_matrix[2*i+3][2*j] = color + 'LV'
+                map_matrix[2*i+3][2*j+1] = color + 'L '
+                map_matrix[2*i+3][2*j+2] = Back.GREEN + ' ' + str(V.cannon_objs[(i,j)].level)
                 map_matrix[2*i+3][2*j+3] = Back.GREEN + '  '
                 map[i][j+1] = -1
                 map[i+1][j] = -1
@@ -184,8 +166,8 @@ def printMap(V):
                 color = buildingColor(V,map[i][j])
                 map_matrix[2*i][2*j] = color + 'WI'
                 map_matrix[2*i][2*j+1] = color + 'Z '
-                map_matrix[2*i+1][2*j] = color + ' T'
-                map_matrix[2*i+1][2*j+1] = color + 'WR'
+                map_matrix[2*i+1][2*j] = color + 'LV'
+                map_matrix[2*i+1][2*j+1] = color + 'L' + str(V.wizard_tower_objs[(i,j)].level)
 
             elif(map[i][j].split(':')[0] == pt.HUT):
                 map_matrix[2*i][2*j] = Back.GREEN + '  '
@@ -319,7 +301,7 @@ def printMap(V):
 
 def showKingHealth(health):
     health_bar = []
-    health_scaled = int(health/10)
+    health_scaled = int(health/30)
     for i in range(10):
         if(i<health_scaled):
             health_bar.append(Back.RED + '  ')
