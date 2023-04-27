@@ -224,7 +224,7 @@ class Archer:
     def isInvisible(self):
         if self.invisible:
             if time.time() - self.spawn_time > 10:
-                self.invisible = False    
+                self.invisible = False
         return self.invisible
 
     def isInAttackradius(self,pos):
@@ -778,7 +778,7 @@ def spawnBalloon(pos):
     bal = Balloon(pos)
     troops_spawned['balloon'] += 1
     balloons.append(bal)
-    
+
 def spawnHealer(pos):
     if(pt.troop_limit['healer'] <= troops_spawned['healer']):
         return
@@ -859,7 +859,6 @@ def move_healers(King, V):
         if hl.alive == False :
             continue
           
-        # closest_building = search_for_closest_building(hl.position, V.map, 0)
         closest_troop = search_for_closest_troop(hl.position, King)
         if(closest_troop == None):
             continue

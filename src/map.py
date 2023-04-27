@@ -307,7 +307,7 @@ def showKingHealth(health):
             health_bar.append(Back.RED + '  ')
         else:
             health_bar.append(Back.BLACK + '  ')
-    store_healthbar(health_bar)        
+    store_healthbar(health_bar)
     return health_bar
 
 def update_map(map):

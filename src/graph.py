@@ -5,7 +5,7 @@
 class Node:
     def __init__(self, i,j,d):
         self.row = i
-        self.col = j
+        self.col = jw
         self.distance = d
  
 def BFS(grid,start):

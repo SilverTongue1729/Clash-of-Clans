@@ -7,7 +7,7 @@ class Building:
     def destroy(self,King):
         self.destroyed = True
         if self.type == 'wall':
-            if self.level >= 3:
+            if self.level >= 1:
                 for t in barbarians + archers + [King]:
                     if max(abs(t.position[0] - self.position[0]), abs(t.position[1] - self.position[1])) <= 2:
                         t.deal_damage(200)
@@ -58,17 +58,6 @@ class Cannon(Building):
                 self.isShooting = True
                 self.attack_target(troop)
                 return
-
-        # for barb in barbarians:
-        #     if (barb.position[0] - self.position[0])**2 + (barb.position[1] - self.position[1])**2 <= self.attack_radius**2:
-        #         self.isShooting = True
-        #         self.attack_target(barb)
-        #         return
-        # for dragon in dragons:
-        #     if (dragon.position[0] - self.position[0])**2 + (dragon.position[1] - self.position[1])**2 <= self.attack_radius**2:
-        #         self.isShooting = True
-        #         self.attack_target(dragon)
-        #         return
 
         if King.alive == False:
             return

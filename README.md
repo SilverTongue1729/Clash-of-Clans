@@ -18,6 +18,7 @@
 
 - Sneaky Archers have been added
 - Healers have been added
+- Levels have been added to walls, wizard tower and cannons
 
 ### Assumptions
 
